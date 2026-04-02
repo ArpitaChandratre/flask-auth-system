@@ -6,7 +6,6 @@ import bcrypt
 from flask_mysqldb import MySQL
 import pdfkit
 import tempfile
-import pandas as pd
 from io import BytesIO
 
 
