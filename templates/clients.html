@@ -1,0 +1,81 @@
+{% extends 'app.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Client & Payment Records</h2>
+        <a href="/export-to-excel" class="btn btn-success shadow-sm">
+            <i class="bi bi-file-earmark-excel me-1"></i> Export to Excel
+        </a>
+    </div>
+
+    <div class="table-responsive rounded shadow-sm">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th scope="col">Client Name</th>
+                    <th scope="col">Final Amount (₹)</th>
+                    <th scope="col">Report Type</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if all_clients %}
+                    {% for record in all_clients %}
+                    <tr>
+                        <td class="text-center">{{ record[1] }}</td>
+                        <td class="text-center">₹ {{ record[2] }}</td>
+                        <td class="text-center">{{ record[3] }}</td>
+                        <td class="text-center">
+                            <a href="{{ url_for('view_client', report_type=record[3], id=record[0]) }}"
+                               class="btn btn-sm btn-outline-primary me-2">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <a href="{{ url_for('delete_client', report_type=record[3], id=record[0]) }}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Are you sure you want to delete this record?');">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">No records found.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+         <div style="text-align: center;">
+     <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+    </div>`
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.table th,
+.table td {
+    vertical-align: middle;
+}
+
+.table td {
+    font-size: 0.95rem;
+}
+
+.btn-outline-primary,
+.btn-outline-danger {
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-danger:hover {
+    transform: scale(1.05);
+}
+
+.table thead th {
+    white-space: nowrap;
+}
+</style>
+{% endblock %}

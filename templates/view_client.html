@@ -1,0 +1,148 @@
+{% extends 'app.html' %}
+{% block content %}
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold text-primary">Client Report: {{ client[1] }}</h2>
+        <div>
+            <a href="{{ url_for('download_view_pdf', report_type=report_type, id=client[0]) }}"
+               class="btn btn-success me-2">
+                <i class="bi bi-download"></i> Download PDF
+            </a>
+            <button class="btn btn-warning" onclick="enableEdit()">
+                <i class="bi bi-pencil-square"></i> Edit
+            </button>
+        </div>
+    </div>
+
+    <form action="{{ url_for('update_client', report_type=report_type, id=client[0]) }}"
+          method="POST" id="editForm" novalidate>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Client Name:</label>
+            <input type="text" name="client_name" class="form-control" value="{{ client[1] }}" readonly>
+        </div>
+
+        {% if report_type == 'Type 2' %}
+            <div class="table-responsive mb-3">
+                <table class="table table-bordered align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Item</th>
+                            <th>Net</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemsBody">
+                        {% for item in items %}
+                        <tr>
+                            <td>
+                                <input type="text" name="item_name[]" class="form-control" value="{{ item['name'] }}" readonly>
+                            </td>
+                            <td>
+                                <input type="number" name="net[]" class="form-control" value="{{ item['net'] or 0 }}" step="any" min="0" required readonly>
+                            </td>
+                            <td>
+                                <input type="number" name="rate[]" class="form-control" value="{{ item['rate'] or 0 }}" step="any" min="0" required readonly>
+                            </td>
+                            <td>
+                                <input type="number" name="amount[]" class="form-control" value="{{ item['amount'] or 0 }}" step="any" min="0" required readonly>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Total Amount:</label>
+                    <input type="number" name="total_amount" class="form-control" value="{{ client[3] or 0 }}" step="any" min="0" required readonly>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Paid Cash:</label>
+                    <input type="number" name="paid_cash" class="form-control" value="{{ client[2] or 0 }}" step="any" min="0" required readonly>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Final Amount:</label>
+                    <input type="number" name="final_amount" class="form-control" value="{{ client[4] or 0 }}" step="any" min="0" required readonly>
+                </div>
+            </div>
+
+        {% elif report_type == 'Type 1' %}
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Gross:</label>
+                    <input type="number" name="gross" class="form-control" value="{{ client[2] or 0 }}" step="any" min="0" required readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Bardan:</label>
+                    <input type="number" name="bardan" class="form-control" value="{{ client[3] or 0 }}" step="any" min="0" required readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Bad:</label>
+                    <input type="number" name="bad" class="form-control" value="{{ client[4] or 0 }}" step="any" min="0" required readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Scrap Rate:</label>
+                    <input type="number" name="scrap_rate" class="form-control" value="{{ client[5] or 0 }}" step="any" min="0" required readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Net:</label>
+                    <input type="number" name="net" class="form-control" value="{{ client[6] or 0 }}" step="any" min="0" required readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Scrap Amount:</label>
+                    <input type="number" name="scrap_amount" class="form-control" value="{{ client[7] or 0 }}" step="any" min="0" required readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Owner Item:</label>
+                    <input type="text" name="owner_item" class="form-control" value="{{ client[8] or '' }}" readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Object Net:</label>
+                    <input type="number" name="object_net" class="form-control" value="{{ client[9] or 0 }}" step="any" min="0" required readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Object Bhav:</label>
+                    <input type="number" name="object_bhav" class="form-control" value="{{ client[10] or 0 }}" step="any" min="0" required readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Object Amount:</label>
+                    <input type="number" name="object_amount" class="form-control" value="{{ client[11] or 0 }}" step="any" min="0" required readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Previous Bill:</label>
+                    <input type="number" name="previous_bill" class="form-control" value="{{ client[12] or 0 }}" step="any" min="0" required readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Total Bill:</label>
+                    <input type="number" name="total_bill" class="form-control" value="{{ client[13] or 0 }}" step="any" min="0" required readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Final Amount:</label>
+                    <input type="number" name="final_amount" class="form-control" value="{{ client[14] or 0 }}" step="any" min="0" required readonly>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="text-end mt-4">
+            <button type="submit" class="btn btn-primary" id="saveBtn" style="display: none;">
+                <i class="bi bi-save"></i> Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+function enableEdit() {
+    // Make all inputs editable (remove readonly)
+    document.querySelectorAll('input').forEach(input => {
+        input.removeAttribute('readonly');
+    });
+    // Show Save button
+    document.getElementById('saveBtn').style.display = 'inline-block';
+}
+</script>
+
+{% endblock %}

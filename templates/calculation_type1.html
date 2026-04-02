@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calculation Type 1</title>
+  
+  <style>
+    /* Import Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* Base Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      color: #333;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Background Animation */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+      z-index: -1;
+      animation: backgroundShift 15s ease-in-out infinite;
+    }
+
+    @keyframes backgroundShift {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(2deg); }
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 600px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Heading */
+    h2 {
+      text-align: center;
+      color: #fff;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Client Name Section */
+    .client-section {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Form Container */
+    form {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 35px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease-in-out;
+      animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+
+    form:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Labels */
+    label {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      display: block;
+      color: #374151;
+      letter-spacing: 0.01em;
+    }
+
+    label:first-of-type {
+      margin-top: 0;
+    }
+
+    /* Input Groups */
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    /* Inputs and Selects */
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1);
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    input[disabled] {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      color: #64748b;
+      cursor: not-allowed;
+      border-color: #cbd5e1;
+    }
+
+    /* Section Title with Select */
+    h3 {
+      margin: 30px 0 15px;
+      color: #1f2937;
+      font-size: 1.2rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    h3 select {
+      font-size: 0.95rem;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 2px solid #d1d5db;
+      background: #fff;
+      min-width: 200px;
+    }
+
+    /* Button Styling */
+    button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    /* Link Styling */
+    a {
+      text-align: center;
+      display: inline-block;
+      margin-top: 25px;
+      padding: 12px 24px;
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    a:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Input Focus Animation */
+    @keyframes inputFocus {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    input:focus,
+    select:focus {
+      animation: inputFocus 0.3s ease;
+    }
+
+    /* Calculation Results Highlight */
+    input[disabled] {
+      position: relative;
+    }
+
+    input[disabled]:not(:placeholder-shown) {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      color: #0369a1;
+      font-weight: 600;
+      border-color: #0ea5e9;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+
+      .container {
+        max-width: 100%;
+      }
+
+      h2 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
+
+      form,
+      .client-section {
+        padding: 25px 20px;
+      }
+
+      h3 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      h3 select {
+        min-width: 100%;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      select {
+        padding: 12px 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 1.75rem;
+      }
+
+      form,
+      .client-section {
+        padding: 20px 15px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      select {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+      }
+
+      button {
+        padding: 14px;
+        font-size: 1rem;
+      }
+    }
+
+    /* Loading Animation for Button */
+    .loading {
+      position: relative;
+      color: transparent;
+    }
+
+    .loading::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 50%;
+      left: 50%;
+      margin-left: -10px;
+      margin-top: -10px;
+      border: 2px solid transparent;
+      border-top: 2px solid #ffffff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+  </style>
+
+  <script>
+    function calculateValues() {
+      let gross = parseFloat(document.getElementById("gross").value) || 0;
+      let bardan = parseFloat(document.getElementById("bardan").value) || 0;
+      let bad = parseFloat(document.getElementById("bad").value) || 0;
+      let scrapRate = parseFloat(document.getElementById("scrap_rate").value) || 0;
+      let objectNet = parseFloat(document.getElementById("object_net").value) || 0;
+      let objectBhav = parseFloat(document.getElementById("object_bhav").value) || 0;
+      let previousBill = parseFloat(document.getElementById("previous_bill").value) || 0;
+
+      let net = gross - bardan - bad;
+      let scrapAmount = net * scrapRate;
+      let objectAmount = objectNet * objectBhav;
+      let totalBill = previousBill + objectAmount;
+      let finalAmount = totalBill - scrapAmount;
+
+      document.getElementById("net").value = net.toFixed(2);
+      document.getElementById("scrap_amount").value = scrapAmount.toFixed(2);
+      document.getElementById("object_amount").value = objectAmount.toFixed(2);
+      document.getElementById("total_bill").value = totalBill.toFixed(2);
+      document.getElementById("final_amount").value = finalAmount.toFixed(2);
+    }
+
+    function downloadPDF() {
+      const clientName = document.getElementById("client_name").value.trim();
+      const button = document.querySelector('button');
+      
+      if (!clientName) {
+        alert("Please enter Client Name before downloading PDF.");
+        return;
+      }
+
+      // Add loading state
+      button.classList.add('loading');
+      button.disabled = true;
+
+      const formData = {
+        client_name: clientName,
+        gross: parseFloat(document.getElementById("gross").value) || 0,
+        bardan: parseFloat(document.getElementById("bardan").value) || 0,
+        bad: parseFloat(document.getElementById("bad").value) || 0,
+        scrap_rate: parseFloat(document.getElementById("scrap_rate").value) || 0,
+        net: parseFloat(document.getElementById("net").value) || 0,
+        scrap_amount: parseFloat(document.getElementById("scrap_amount").value) || 0,
+        owner_item: document.getElementById("owner_item").value,
+        object_net: parseFloat(document.getElementById("object_net").value) || 0,
+        object_bhav: parseFloat(document.getElementById("object_bhav").value) || 0,
+        object_amount: parseFloat(document.getElementById("object_amount").value) || 0,
+        previous_bill: parseFloat(document.getElementById("previous_bill").value) || 0,
+        total_bill: parseFloat(document.getElementById("total_bill").value) || 0,
+        final_amount: parseFloat(document.getElementById("final_amount").value) || 0
+      };
+
+      fetch("/download-pdf-type1", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("Network response was not ok.");
+        return response.blob();
+      })
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${clientName}_report_type1.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch(error => {
+        console.error("Download error:", error);
+        alert("There was an error downloading the PDF.");
+      })
+      .finally(() => {
+        // Remove loading state
+        button.classList.remove('loading');
+        button.disabled = false;
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>Scrap Calculation Type 1</h2>
+
+    <!-- Client Name Section -->
+    <div class="client-section">
+      <label for="client_name"><strong>Client Name:</strong></label>
+      <input type="text" id="client_name" placeholder="Enter client name" required>
+    </div>
+
+    <form onsubmit="return false;">
+      <label for="gross">Total Gross:</label>
+      <input type="number" id="gross" oninput="calculateValues()" step="any" placeholder="0.00">
+
+      <label for="bardan">Bardan:</label>
+      <input type="number" id="bardan" oninput="calculateValues()" step="any" placeholder="0.00">
+
+      <label for="bad">Bad:</label>
+      <input type="number" id="bad" oninput="calculateValues()" step="any" placeholder="0.00">
+
+      <label for="scrap_rate">Scrap Rate:</label>
+      <input type="number" id="scrap_rate" oninput="calculateValues()" step="any" placeholder="0.00">
+
+      <label for="net">Net Weight:</label>
+      <input type="number" id="net" disabled step="any" placeholder="Calculated automatically">
+
+      <label for="scrap_amount">Scrap Amount:</label>
+      <input type="number" id="scrap_amount" disabled step="any" placeholder="Calculated automatically">
+
+      <!-- Owner Section with Dropdown -->
+      <h3>By Owner 
+        <select id="owner_item">
+          <option>Aluminium Cooker</option>
+          <option>Aluminium Degda</option>
+          <option>Aluminium Bhagona</option>
+          <option>Aluminium Ghamela</option>
+          <option>Aluminium Tope</option>
+          <option>Aluminium Patila</option>
+          <option>Aluminum Kadai</option>
+          <option>Aluminium Dabba</option>
+          <option>Aluminium Cooking Vessel</option>
+        </select>
+      </h3>
+
+      <label for="object_net">Object Net Weight:</label>
+      <input type="number" id="object_net" oninput="calculateValues()" step="any" placeholder="0.00">
+
+      <label for="object_bhav">Bhav (Rate):</label>
+      <input type="number" id="object_bhav" oninput="calculateValues()" step="any" placeholder="0.00">
+
+      <label for="previous_bill">Previous Bill:</label>
+      <input type="number" id="previous_bill" oninput="calculateValues()" step="any" placeholder="0.00">
+
+      <label for="object_amount">Aluminium Object Amount:</label>
+      <input type="number" id="object_amount" disabled step="any" placeholder="Calculated automatically">
+
+      <label for="total_bill">Total Bill (Prev + Object):</label>
+      <input type="number" id="total_bill" disabled step="any" placeholder="Calculated automatically">
+
+      <label for="final_amount">Final Bill (Total - Scrap):</label>
+      <input type="number" id="final_amount" disabled step="any" placeholder="Calculated automatically">
+
+      <!-- Button to Trigger PDF Download -->
+      <button type="button" onclick="downloadPDF()">Download PDF</button>
+    </form>
+
+    <div style="text-align: center;">
+     <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+    </div>`
+  </div>
+</body>
+</html>

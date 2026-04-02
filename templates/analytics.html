@@ -1,0 +1,157 @@
+{% extends 'app.html' %}
+{% block content %}
+<div class="container mt-5" style="background: linear-gradient(135deg, #1a2637, #4a657a, #cfd8dc); padding: 30px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.15);">
+  <h2 style="color: #f0f4f8; font-weight: 700;">Client Payment Analytics</h2>
+
+  <!-- Dropdown to choose chart type -->
+  <div class="mb-4">
+    <label for="chartType" style="color: #dbe9f4; font-weight: 600;"><strong>Select Chart Type:</strong></label>
+    <select id="chartType" class="form-select w-50" onchange="renderChart()" style="border-color: #a7b1c2; background-color: #f8fafc; box-shadow: 0 0 5px rgba(167,177,194,0.6);">
+      <option value="bar">Bar Chart</option>
+      <option value="horizontalBar">Histogram (Horizontal Bar)</option>
+      <option value="line">Line Chart</option>
+      <option value="pie">Pie Chart</option>
+    </select>
+  </div>
+
+  <canvas id="paymentChart" width="800" height="400"></canvas>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const rawData = {{ data | tojson }};
+  let chart;
+
+  const prepareData = () => {
+    const labels = rawData.map(item => item[0]); // client_name
+    const values = rawData.map(item => parseFloat(item[1])); // final_amount
+    const types = rawData.map(item => item[2]);  // report_type
+    return { labels, values, types };
+  };
+
+  function renderChart() {
+    const ctx = document.getElementById('paymentChart').getContext('2d');
+    if (chart) chart.destroy();
+
+    const chartType = document.getElementById('chartType').value;
+    const { labels, values, types } = prepareData();
+
+    let chartConfig = {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Final Amount (₹)',
+          data: values,
+          backgroundColor: types.map(t =>
+            t === 'Type 1' ? 'rgba(72, 133, 237, 0.8)' : 'rgba(237, 72, 90, 0.8)'
+          ),
+          borderColor: 'rgba(255, 255, 255, 0.9)',
+          borderWidth: 1,
+          hoverBackgroundColor: types.map(t =>
+            t === 'Type 1' ? 'rgba(72, 133, 237, 1)' : 'rgba(237, 72, 90, 1)'
+          )
+        }]
+      },
+      options: {
+        indexAxis: chartType === 'horizontalBar' ? 'y' : 'x',
+        responsive: true,
+        plugins: {
+          legend: {
+            display: chartType !== 'pie',
+            labels: {
+              color: '#f0f4f8',
+              generateLabels: function(chart) {
+                return [
+                  {
+                    text: 'Type 1 (Scrap Calculation)',
+                    fillStyle: 'rgba(72, 133, 237, 0.8)',
+                    strokeStyle: '#fff',
+                    lineWidth: 1
+                  },
+                  {
+                    text: 'Type 2 (Utensils Calculation)',
+                    fillStyle: 'rgba(237, 72, 90, 0.8)',
+                    strokeStyle: '#fff',
+                    lineWidth: 1
+                  }
+                ];
+              }
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const index = context.dataIndex;
+                const value = context.dataset.data[index];
+                const client = context.chart.data.labels[index];
+                const type = rawData[index][2];
+                return `${client} (${type}): ₹${value}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            title: {
+              display: chartType !== 'pie',
+              text: chartType === 'horizontalBar' ? 'Final Amount (₹)' : 'Client Name',
+              color: '#dbe9f4',
+              font: { weight: '600' }
+            },
+            ticks: { color: '#dbe9f4' },
+            grid: { color: 'rgba(255,255,255,0.1)' }
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: chartType !== 'pie',
+              text: chartType === 'horizontalBar' ? 'Client Name' : 'Final Amount (₹)',
+              color: '#dbe9f4',
+              font: { weight: '600' }
+            },
+            ticks: { color: '#dbe9f4' },
+            grid: { color: 'rgba(255,255,255,0.1)' }
+          }
+        }
+      }
+    };
+
+    if (chartType === 'pie') {
+      chartConfig.type = 'pie';
+      chartConfig.data = {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: types.map(t =>
+            t === 'Type 1' ? 'rgba(72, 133, 237, 0.8)' : 'rgba(237, 72, 90, 0.8)'
+          ),
+          borderColor: '#1a2637',
+          borderWidth: 2,
+          hoverOffset: 30
+        }]
+      };
+      chartConfig.options.scales = {};
+      chartConfig.options.plugins.legend.labels.color = '#f0f4f8';
+    }
+
+    if (chartType === 'line') {
+      chartConfig.type = 'line';
+      chartConfig.data.datasets[0].fill = true;
+      chartConfig.data.datasets[0].borderColor = 'rgba(72, 133, 237, 1)';
+      chartConfig.data.datasets[0].backgroundColor = 'rgba(72, 133, 237, 0.25)';
+      chartConfig.data.datasets[0].pointBackgroundColor = 'rgba(237, 72, 90, 1)';
+      chartConfig.data.datasets[0].pointBorderColor = '#1a2637';
+      chartConfig.data.datasets[0].pointHoverBackgroundColor = '#1a2637';
+      chartConfig.data.datasets[0].pointHoverBorderColor = 'rgba(237, 72, 90, 1)';
+    }
+
+    chart = new Chart(ctx, chartConfig);
+  }
+
+  window.onload = renderChart;
+</script>
+{% endblock %}

@@ -1,0 +1,338 @@
+{% extends 'app.html' %}
+{% block content %}
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<style>
+  /* Reset & base */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #212529;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Navbar */
+  .navbar-custom {
+    background-color: #0d6efd;
+    padding: 0.8rem 2rem;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.4);
+  }
+
+  .navbar-custom .navbar-brand {
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: #fff;
+  }
+
+  .profile-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: white;
+    font-weight: 600;
+  }
+
+  .profile-avatar-sm {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .profile-avatar-sm:hover {
+    transform: scale(1.1);
+  }
+
+  /* Sidebar */
+  .sidebar {
+    min-height: 100vh;
+    background: #212529;
+    color: #adb5bd;
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .sidebar h4 {
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 2.5rem;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+
+  .sidebar a {
+    color: #adb5bd;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-size: 1rem;
+  }
+
+  .sidebar a i {
+    margin-right: 12px;
+    font-size: 1.25rem;
+  }
+
+  .sidebar a:hover, .sidebar a.active {
+    background-color: #0d6efd;
+    color: white;
+  }
+
+  /* Main content */
+  .main-content {
+    padding: 2.5rem 3rem;
+    background-color: #fff;
+    min-height: 100vh;
+  }
+
+  .dashboard-heading {
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+    color: #212529;
+  }
+
+  .dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+    gap: 2rem;
+  }
+
+  .card {
+    background: linear-gradient(135deg, #4a90e2, #357ABD);
+    border-radius: 12px;
+    color: white;
+    padding: 2rem;
+    box-shadow: 0 8px 16px rgba(69, 114, 165, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(69, 114, 165, 0.5);
+  }
+
+  .card i {
+    font-size: 3.2rem;
+    margin-bottom: 1.5rem;
+    align-self: flex-start;
+  }
+
+  .card h5 {
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .card p {
+    font-weight: 400;
+    font-size: 1rem;
+    opacity: 0.85;
+    margin-bottom: 1.8rem;
+  }
+
+  .card .btn {
+    align-self: flex-start;
+    padding: 0.5rem 1.4rem;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #357ABD;
+    border: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .card .btn:hover {
+    background-color: #e6f0ff;
+    color: #214a8a;
+  }
+
+  /* Dark Mode */
+  .dark-mode {
+    background-color: #121212 !important;
+    color: #e0e0e0;
+  }
+
+  .dark-mode .navbar-custom {
+    background-color: #1f1f1f;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+  }
+
+  .dark-mode .navbar-custom .navbar-brand,
+  .dark-mode .profile-info {
+    color: #4dabf7;
+  }
+
+  .dark-mode .sidebar {
+    background-color: #1e1e1e;
+    color: #9e9e9e;
+  }
+
+  .dark-mode .sidebar a {
+    color: #9e9e9e;
+  }
+
+  .dark-mode .sidebar a:hover,
+  .dark-mode .sidebar a.active {
+    background-color: #4dabf7;
+    color: #121212;
+  }
+
+  .dark-mode .main-content {
+    background-color: #181818;
+  }
+
+  .dark-mode .card {
+    background: linear-gradient(135deg, #2a4a7c, #1a2f57);
+    box-shadow: 0 12px 24px rgba(77, 171, 247, 0.5);
+  }
+
+  .dark-mode .card .btn {
+    background-color: #4dabf7;
+    color: #121212;
+  }
+
+  .dark-mode .card .btn:hover {
+    background-color: #3a8de0;
+  }
+
+  /* Dark mode toggle switch */
+  .toggle-switch {
+    color: #adb5bd;
+    padding-top: 1rem;
+    text-align: center;
+  }
+
+  .form-check-input {
+    width: 3rem;
+    height: 1.5rem;
+    cursor: pointer;
+  }
+
+  .form-check-label {
+    font-weight: 600;
+    user-select: none;
+    cursor: pointer;
+  }
+</style>
+
+<!-- Navbar -->
+<nav class="navbar navbar-custom d-flex justify-content-between align-items-center">
+  <a class="navbar-brand" href="{{ url_for('dashboard') }}">MyApp</a>
+  {% if user %}
+  <div class="profile-info">
+    <span>{{ user[1].split()[0] }}</span>
+    <a href="{{ url_for('profile') }}">
+      <img src="{{ url_for('static', filename='images/avatar.png') }}" alt="Profile" class="profile-avatar-sm" title="View Profile">
+    </a>
+  </div>
+  {% endif %}
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3 sidebar d-flex flex-column justify-content-between">
+      <div>
+        <h4>Admin Menu</h4>
+        <a href="{{ url_for('profile') }}" class="active"><i class="bi bi-person-circle"></i> Profile</a>
+        <a href="#"><i class="bi bi-gear"></i> Settings</a>
+        <a href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+      </div>
+
+      <!-- Dark Mode Toggle -->
+      <div class="toggle-switch">
+        <div class="form-check form-switch d-flex justify-content-center align-items-center">
+          <input class="form-check-input" type="checkbox" id="darkModeSwitch">
+          <label class="form-check-label ms-2" for="darkModeSwitch">Dark Mode</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="col-md-9 main-content">
+      {% if user %}
+      <h2 class="dashboard-heading">Welcome, <span class="text-primary">{{ user[1] }}</span> 👋</h2>
+
+      <div class="dashboard-cards">
+        <div class="card">
+          <i class="bi bi-calculator"></i>
+          <h5>Calculation Type 1</h5>
+          <p>Perform basic calculations with ease and accuracy.</p>
+          <a href="{{ url_for('calculation_type1') }}" class="btn">Go</a>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, #f6a609, #f6d365); color: #212529;">
+          <i class="bi bi-calculator-fill"></i>
+          <h5>Calculation Type 2</h5>
+          <p>Advanced calculation tools for your complex needs.</p>
+          <a href="{{ url_for('calculation_type2') }}" class="btn" style="color:#212529; background:#fff;">Go</a>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, #28a745, #85d366);">
+          <i class="bi bi-receipt"></i>
+          <h5>See All Transactions</h5>
+          <p>Review your transaction history and details.</p>
+          <a href="{{ url_for('clients') }}" class="btn">View</a>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, #17a2b8, #5bc0de);">
+          <i class="bi bi-bar-chart-line"></i>
+          <h5>Payment Analytics</h5>
+          <p>Analyze your payments with detailed graphs.</p>
+          <a href="{{ url_for('payment_analytics') }}" class="btn">Analyze</a>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, #6f42c1, #b794f4);">
+          <i class="bi bi-calculator"></i>
+          <h5>General Calculator</h5>
+          <p>Use a simple calculator for quick math.</p>
+          <a href="{{ url_for('calculator') }}" class="btn">Open</a>
+        </div>
+      </div>
+      {% else %}
+      <div class="alert alert-danger">You are not logged in. Please log in to access dashboard features.</div>
+      {% endif %}
+    </main>
+  </div>
+</div>
+
+<script>
+  const toggleSwitch = document.getElementById('darkModeSwitch');
+  const body = document.body;
+
+  // Load dark mode state from localStorage
+  if (localStorage.getItem('darkMode') === 'enabled') {
+    body.classList.add('dark-mode');
+    toggleSwitch.checked = true;
+  }
+
+  toggleSwitch.addEventListener('change', () => {
+    if (toggleSwitch.checked) {
+      body.classList.add('dark-mode');
+      localStorage.setItem('darkMode', 'enabled');
+    } else {
+      body.classList.remove('dark-mode');
+      localStorage.setItem('darkMode', 'disabled');
+    }
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Calculation Type 2 - Aluminium Utensils</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom right, #d5a3ed, #a3d5ed); /* Updated gradient */
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #0d47a1;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        label strong {
+            font-size: 1.1rem;
+            color: #0d47a1;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1.8px solid #cfd8dc;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            outline-offset: 2px;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            border-color: #1976d2;
+            outline: none;
+        }
+
+        #client_name {
+            max-width: 400px;
+            display: block;
+            margin: 0 auto 30px auto;
+        }
+
+        #pdf-content {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px 40px 40px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgb(0 0 0 / 0.1);
+        }
+
+        .item-row {
+            display: grid;
+            grid-template-columns: 2.5fr 1fr 1fr 1.2fr 1fr;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .item-row select,
+        .item-row input {
+            font-size: 1rem;
+        }
+
+        .item-row input.amount {
+            background-color: #e3f2fd;
+            border: 1.8px solid #90caf9;
+            text-align: right;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+
+        .item-row button {
+            background-color: #ef5350;
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .item-row button:hover {
+            background-color: #c62828;
+        }
+
+        button[onclick="addRow()"] {
+            display: block;
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin: 20px auto 30px auto;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 200px;
+            box-shadow: 0 5px 15px rgb(25 118 210 / 0.4);
+            transition: background-color 0.3s ease;
+        }
+
+        button[onclick="addRow()"]:hover {
+            background-color: #1565c0;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin-bottom: 25px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            max-width: 400px;
+            margin: 0 auto 15px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        p strong {
+            color: #0d47a1;
+        }
+
+        p input[type="number"] {
+            width: 120px;
+            padding: 8px 10px;
+            font-weight: 500;
+            font-size: 1rem;
+            border: 1.8px solid #cfd8dc;
+            border-radius: 6px;
+            text-align: right;
+        }
+
+        button[onclick="sendToServer()"] {
+            display: block;
+            background-color: #388e3c;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            margin: 40px auto 20px auto;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 250px;
+            box-shadow: 0 6px 20px rgb(56 142 60 / 0.5);
+            transition: background-color 0.3s ease;
+        }
+
+        button[onclick="sendToServer()"]:hover {
+            background-color: #2e7d32;
+        }
+
+        @media (max-width: 720px) {
+            .item-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .item-row button {
+                width: 100%;
+            }
+
+            p {
+                flex-direction: column;
+                font-size: 1rem;
+            }
+
+            p input[type="number"] {
+                width: 100%;
+                margin-top: 6px;
+            }
+
+            button[onclick="addRow()"],
+            button[onclick="sendToServer()"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Aluminium Utensils Calculation</h2>
+
+    <label for="client_name"><strong></strong></label>
+    <input type="text" id="client_name" placeholder="Enter client name" required>
+
+    <div id="pdf-content">
+        <div id="rows">
+            <div class="item-row">
+                <select name="item" class="item">
+                    <option value="Aluminium Cooker">Aluminium Cooker</option>
+                    <option value="Aluminium Degda">Aluminium Degda</option>
+                    <option value="Aluminium Bhagona">Aluminium Bhagona</option>
+                    <option value="Aluminium Ghamela">Aluminium Ghamela</option>
+                    <option value="Aluminium Tope">Aluminium Tope</option>
+                    <option value="Aluminium Patila">Aluminium Patila</option>
+                    <option value="Aluminum Kadai">Aluminum Kadai</option>
+                    <option value="Aluminium Dabba">Aluminium Dabba</option>
+                    <option value="Aluminium Cooking Vessel">Aluminium Cooking Vessel</option>
+                </select>
+                <input type="number" class="net" placeholder="Net" oninput="calculateAmount(this.parentNode)">
+                <input type="number" class="rate" placeholder="Rate" oninput="calculateAmount(this.parentNode)">
+                <input type="text" class="amount" placeholder="Amount" readonly>
+                <button type="button" onclick="removeRow(this)">Remove</button>
+            </div>
+        </div>
+
+        <button onclick="addRow()">Add More</button>
+
+        <hr>
+
+        <p><strong>Total:</strong> ₹ <span id="total">0.00</span></p>
+        <p><strong>Paid Cash:</strong> ₹ <input type="number" id="paid_cash" value="0" oninput="calculateTotal()"></p>
+        <p><strong>Final Amount:</strong> ₹ <span id="final_amount">0.00</span></p>
+    </div>
+
+    <button onclick="sendToServer()">Download PDF</button>
+
+    <script>
+        function calculateAmount(row) {
+            const net = parseFloat(row.querySelector('.net').value) || 0;
+            const rate = parseFloat(row.querySelector('.rate').value) || 0;
+            const amount = row.querySelector('.amount');
+            amount.value = (net * rate).toFixed(2);
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            const rows = document.querySelectorAll('.item-row');
+            let total = 0;
+            rows.forEach(row => {
+                const amount = parseFloat(row.querySelector('.amount').value) || 0;
+                total += amount;
+            });
+            document.getElementById('total').innerText = total.toFixed(2);
+
+            const paid = parseFloat(document.getElementById('paid_cash').value) || 0;
+            document.getElementById('final_amount').innerText = (total - paid).toFixed(2);
+        }
+
+        function addRow() {
+            const container = document.getElementById('rows');
+            const newRow = document.createElement('div');
+            newRow.className = 'item-row';
+            newRow.innerHTML = `
+                <select name="item" class="item">
+                    <option value="Aluminium Cooker">Aluminium Cooker</option>
+                    <option value="Aluminium Degda">Aluminium Degda</option>
+                    <option value="Aluminium Bhagona">Aluminium Bhagona</option>
+                    <option value="Aluminium Ghamela">Aluminium Ghamela</option>
+                    <option value="Aluminium Tope">Aluminium Tope</option>
+                    <option value="Aluminium Patila">Aluminium Patila</option>
+                    <option value="Aluminum Kadai">Aluminum Kadai</option>
+                    <option value="Aluminium Dabba">Aluminium Dabba</option>
+                    <option value="Aluminium Cooking Vessel">Aluminium Cooking Vessel</option>
+                </select>
+                <input type="number" class="net" placeholder="Net" oninput="calculateAmount(this.parentNode)">
+                <input type="number" class="rate" placeholder="Rate" oninput="calculateAmount(this.parentNode)">
+                <input type="text" class="amount" placeholder="Amount" readonly>
+                <button type="button" onclick="removeRow(this)">Remove</button>
+            `;
+            container.appendChild(newRow);
+        }
+
+        function removeRow(btn) {
+            btn.parentNode.remove();
+            calculateTotal();
+        }
+
+        function sendToServer() {
+            const clientName = document.getElementById("client_name").value.trim();
+            if (!clientName) {
+                alert("Please enter client name");
+                return;
+            }
+
+            const rows = document.querySelectorAll(".item-row");
+            if (rows.length === 0) {
+                alert("Please add at least one item");
+                return;
+            }
+
+            let items = [];
+            let totalAmount = 0;
+
+            rows.forEach(row => {
+                const name = row.querySelector(".item").value;
+                const net = parseFloat(row.querySelector(".net").value) || 0;
+                const rate = parseFloat(row.querySelector(".rate").value) || 0;
+                const amount = net * rate;
+                totalAmount += amount;
+
+                items.push({
+                    name: name,
+                    net: net.toFixed(2),
+                    rate: rate.toFixed(2),
+                    amount: amount.toFixed(2)
+                });
+            });
+
+            const paidCash = parseFloat(document.getElementById("paid_cash").value) || 0;
+            const finalAmount = totalAmount - paidCash;
+
+            const data = {
+                client_name: clientName,
+                items: items,
+                total_amount: totalAmount.toFixed(2),
+                paid_cash: paidCash.toFixed(2),
+                final_amount: finalAmount.toFixed(2)
+            };
+
+            fetch("/download-pdf-type2", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Server error");
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `${clientName}_report_type2.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            })
+            .catch(err => {
+                console.error("Download failed:", err);
+                alert("Error generating PDF");
+            });
+        }
+    </script>
+    <div style="text-align: center;">
+        <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+    </div>
+</body>
+</html>
